@@ -1,0 +1,114 @@
+{ rad_mcp's photometric correction file (Phase 11a, ruling R469).
+  Derived from Radiance 6.1a's lib/source.cal (the stock file):
+  stock lines 28-29 and 43, which comment out the five correction formulas, and lines 45-49, which
+  redefine them through the compiled source_corr(), are removed. On this build source_corr drops the
+  brightdata A1 multiplier: ERCO at 2 m reads 0.168 lux stock and 175.061 lux with this file.
+  The Radiance Software License, Version 2.0
+
+  Radiance v6.1 Copyright (c) 1990 to 2025, The Regents of the University of
+  California, through Lawrence Berkeley National Laboratory (subject to receipt
+  of any required approvals from the U.S. Dept. of Energy).  All rights reserved.
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
+
+  (1) Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+  (2) Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+
+  (3) Neither the name of the University of California, Lawrence Berkeley
+  National Laboratory, U.S. Dept. of Energy nor the names of its contributors
+  may be used to endorse or promote products derived from this software
+  without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
+
+  You are under no obligation whatsoever to provide any bug fixes, patches,
+  or upgrades to the features, functionality or performance of the source
+  code ("Enhancements") to anyone; however, if you choose to make your
+  Enhancements available either publicly, or directly to Lawrence Berkeley
+  National Laboratory, without imposing a separate written license agreement
+  for such Enhancements, then you hereby grant the following license: a
+  non-exclusive, royalty-free perpetual license to install, use, modify,
+  prepare derivative works, incorporate into other computer software,
+  distribute, and sublicense such enhancements or derivative works thereof,
+  in binary and source code form.
+}
+
+{ RCSid: $Id$ }
+{
+	Source distribution coordinates (degrees).
+
+	Theta is measured from the negative z-axis.
+	Phi is measured from the positive x-axis (0 degrees)
+		towards the positive y-axis (90 degrees).
+
+	srcB_vert and srcB_horiz are angles
+	used in type B photometry.
+
+	boxcorr function corrects for distribution modeled
+	with a rectangular box.  lboxcorr provides a more
+	accurate calculation for nearby surfaces, but requires
+	that the source box be centered at the origin.
+	The dimensions of the box, which must be aligned with
+	the x,y,z axes, are given in meters regardless of the
+	units being used in the scene file.
+
+	cylcorr function provides the same correction for a
+	cylinder whose central axis is aligned with the Z-axis.
+
+	A1		- optional multipier
+	A2,A3,A4	- X,Y,Z dimensions of axis-aligned box (in meters!)
+or:
+	A2,A3		- diameter and height of Z-aligned cylinder (meters)
+}
+
+						{ local definitions }
+boxprojection = abs(Dx)*A3*A4 + abs(Dy)*A2*A4 + abs(Dz)*A2*A3;
+lboxprojection = (	noneg(abs(Px-Dx*Ts)-A2/2)*A3*A4 +
+			noneg(abs(Py-Dy*Ts)-A3/2)*A2*A4 +
+			noneg(abs(Pz-Dz*Ts)-A4/2)*A2*A3 ) / Ts;
+cylprojection = A2*A3*sqrt(1-Dz*Dz) + PI/4*A2*A2*abs(Dz);
+
+corr(v) = noneg(if(AC-.5, A1*v, v));		{ multiplier correction }
+flatcorr(v) = corr(v) / Rdot;			{ correction for flat sources }
+boxcorr(v) = noneg(A1*v) / boxprojection;	{ correction for emitting box }
+lboxcorr(v) = noneg(A1*v) / lboxprojection;	{ local box correction }
+cylcorr(v) = noneg(A1*v) / cylprojection;	{ cylinder correction }
+
+
+{------------------------------------------------------------------------------
+	The following angle functions have been subsumed by
+		source_theta(), source_phi():
+
+src_theta = Acos(Dz) / DEGREE;			{ 0-180 }
+src_phi = mod( Atan2(-Dy, -Dx) / DEGREE, 360 );	{ 0-360 }
+				{ bilateral symmetry }
+src_phi2 = tri( src_phi, 180 );			{ 0-180 }
+				{ quadrilateral symmetry }
+src_phi4 = tri( src_phi, 90 );			{ 0-90 }
+------------------------------------------------------------------------------}
+
+src_theta = source_theta(180);
+src_phi = source_phi(360);
+src_phi2 = source_phi(180);
+src_phi4 = source_phi(90);
+						{ Type B photometry coordinates }
+srcB_vert = Atan2( -Dx, Dz ) / DEGREE;
+srcB_horiz = Atan2( Dy, Dz ) / DEGREE;
+						{ w/ symmetry }
+srcB_vert2 = abs( srcB_vert );
+srcB_horiz2 = abs( srcB_horiz );

@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Radiance artefacts: large, regenerable, machine-specific
+*.oct
+*.amb
+*.mtx
+*.vmx
+*.dmx
+*.tmx
+*.smx
+*.ill
+*.hdr
+*.pic
+
+# Weather files are often licensed: never commit one
+*.epw
+*.wea
+
+# Editor and OS
+*~
+.DS_Store
+.vscode/
+.idea/
+
+# Local agent state
+.claude/
+.superpowers/

@@ -1,0 +1,30 @@
+{
+  "name": "rad-mcp",
+  "description": "General Radiance lighting simulation as a local MCP server: project and geometry import (OBJ, .rad) with octree checks, materials with provenance, sensor grids to EN 12464-1/EN 17037/LM-83, weather (EPW), BSDF inspection and genBSDF, window groups, point-in-time illuminance and daylight factor, annual 2/3/5-phase simulation with LM-83 blinds, sDA/ASE/UDI and EN 17037 compliance, rpict renders and falsecolor, evalglare DGP, IES luminaires with UGR and EN 12464-1 uniformity, view out and sunlight exposure, and reproducible script export. Ships two skills: the Radiance CLI workflow and the lighting standards requirements.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Antonis Kontadakis",
+    "url": "https://github.com/akontadakis"
+  },
+  "homepage": "https://github.com/akontadakis/rad-mcp",
+  "repository": "https://github.com/akontadakis/rad-mcp",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude-code",
+    "agent-skills",
+    "radiance",
+    "daylighting",
+    "lighting-simulation",
+    "bsdf",
+    "three-phase",
+    "five-phase",
+    "lm-83",
+    "en-17037",
+    "en-12464",
+    "glare",
+    "building-simulation",
+    "python"
+  ]
+}

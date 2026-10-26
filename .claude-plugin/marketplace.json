@@ -1,0 +1,16 @@
+{
+  "name": "rad-mcp",
+  "metadata": {
+    "description": "Radiance lighting simulation as a local MCP server: annual daylight with 2-, 3- and 5-phase matrix methods and BSDFs, LM-83 sDA/ASE, EN 17037, renders, DGP and UGR glare, from your own Radiance scene."
+  },
+  "owner": {
+    "name": "Antonis Kontadakis",
+    "url": "https://github.com/akontadakis"
+  },
+  "plugins": [
+    {
+      "name": "rad-mcp",
+      "source": "./"
+    }
+  ]
+}
